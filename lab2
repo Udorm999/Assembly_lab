@@ -1,0 +1,32 @@
+INCLUDE D:/irvine/Irvine32.inc
+; Program Description: Copies from a Word (16-bit) array to a DoubleWord (32-bit) array
+.386
+.stack 4096
+    ExitProcess PROTO,
+        dwExitCode: DWORD
+
+.data
+    wordArray   WORD  10h, 20h, 30h, 40h, 50h        ; source 16-bit array
+    dwordArray  DWORD 5 DUP(0)                       ; destination 32-bit array (initialized to 0)
+    arraySize   DWORD 5                              ; number of elements
+
+.code
+main PROC
+
+    mov  ecx, arraySize                               ; loop counter = number of elements
+    mov  esi, 0                                       ; index starts at 0
+    call DumpRegs
+
+
+copyLoop:
+    movzx eax, wordArray[esi*2]                        ; zero-extend WORD into EAX (esi*2 because WORD = 2 bytes)
+    mov   dwordArray[esi*4], eax                       ; store EAX into DWORD array (esi*4 because DWORD = 4 bytes)
+    inc   esi                                          ; move to next element
+    loop  copyLoop                                     ; decrement ECX and repeat if not zero
+    call DumpRegs
+
+
+    INVOKE ExitProcess, 0
+main ENDP
+
+END main
